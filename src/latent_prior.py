@@ -14,33 +14,6 @@ from src.train_utils import denormalise_data, normalise_data
 
 
 class LatentPrior(DiffusionPrior):
-    """Samples Latent vectors conditions on an encoding
-
-    Supports two types of normalisation for input data:
-    - z-score normalisation, i.e. use channels-wise means and std to normalise all channels
-    of the latent to be mean=0 var=1. This makes a lot of sense for StyleGAN as we're learning latents
-    considering the mean latent as the origin. (we could imagine even more complex setups, e.g. using P space
-    where we inverse the final mapping relu and compute the PCA directions. But this seems like too much effort)
-    - sqrt(dims) scaling. As suggested in the original dalle2_pytorch repo we might want to divide by the norm and 
-    then multiply by sqrt(dims) to scale the norm to the corresponding dim Gaussian.
-
-    We might want to do either/any of the above on the latent as well as the embedding (i.e. condition)
-
-    Note as we're re-using the original DiffusionPrior the nomenclature is a bit confusing:
-
-    Generate -> StyleGAN W latents -> equiv of image_embed in Dalle-2
-    Condition on  -> CLIP embedding -> equiv of text_embed in Dalle-2
-
-    By default we operate in w space which is 18 copies of the same 512 latent (for sg2 ffhq 1024). 
-    So the diffusion model only needs to generate 1x512 latent and repeat this 18 times.
-    Other times we might want to operate in the full w+ 18x512 space (or something in between).
-    We could either use a 9,216 dim latent and reshape it, or have 18x512 tokens for the transformer
-    as a first try we'll use 18 tokens.
-
-    latent repeates dictates how the latents should repeat for output, e.g working in a coarse, mid, fine
-    representation (w3) we migth have repeats of (4, 4, 10)
-    """
-
     def __init__(self, *args,
         text_embed_scale=1.0,
         latent_stats=(None,None),

@@ -27,8 +27,8 @@ generators = {
     "sg3-lhq-256": partial(load_sg, 'https://huggingface.co/justinpinkney/stylegan3-t-lhq-256/resolve/main/lhq-256-stylegan3-t-25Mimg.pkl'),
 }
 
+
 def mix_styles(w_batch, space):
-    """Defines a style mixing procedure"""
     space_spec = {
         "w3": (4, 4, 10),
     }
@@ -107,8 +107,8 @@ def run_folder_list(
 def process_and_save(batch_size, folder_name, batch_idx, idx, latent, im, image_feature, save_im):
     count = batch_idx*batch_size + idx
     basename = folder_name/f"{folder_name.stem}{count:04}"
-    np.save(basename.with_suffix(".latent.npy"), latent)
-    np.save(basename.with_suffix(".img_feat.npy"), image_feature)
+    np.save(basename.with_suffix("latent.npy"), latent)
+    np.save(basename.with_suffix("image_feat.npy"), image_feature)
     if save_im:
         im = Image.fromarray(im)
         im.save(basename.with_suffix(".gen.jpg"), quality=95)

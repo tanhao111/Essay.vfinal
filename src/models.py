@@ -59,7 +59,6 @@ class Clipper(torch.nn.Module):
             return p.device
 
 class StyleGAN(torch.nn.Module):
-    """A wrapper around the compontent models to create an end-to-end text2image model"""
     def __init__(self, cfg, device, checkpoint=None) -> None:
         super().__init__()
 
@@ -101,13 +100,6 @@ class StyleGAN(torch.nn.Module):
         return images, similarity
 
 def load_models(cfg, device, stats=None):
-    """Load the diffusion trainer and eval models based on a config
-
-    If the model requires statistics for embed or latent normalisation
-    then these should be passed into this function, unless the state of
-    the model is to be loaded from a state_dict (which will contain these)
-    statistics, in which case the stats will be filled with dummy values.
-    """
     if cfg.data.n_latents > 1:
         prior_network = WPlusPriorNetwork(n_latents=cfg.data.n_latents, **cfg.model.network).to(device)
     else:

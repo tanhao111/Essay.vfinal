@@ -5,6 +5,6 @@ setup(
     packages=['src'],
     version='1.0',
     description='Official code for generate human face.',
-    author='Justin Pinkney',
+    author='Team 64',
     package_data = {'src': ['stylegan3/**/*']}
 )
