@@ -49,4 +49,4 @@ def predict():
             return render_template("index.html", result = file_name)
 
 if __name__ == 'main':
-    app.run()
+    app.run(port=8080)
