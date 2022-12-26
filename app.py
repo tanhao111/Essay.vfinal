@@ -1,9 +1,15 @@
 from flask import Flask, render_template, request
 import torch
+import io
 from src import models
 from PIL import Image
 import string
 import random
+from firebase_admin import credentials, initialize_app, storage
+
+cred = credentials.Certificate("./config/tlcn-372608-c93bc175d3ae.json")
+initialize_app(cred, {"storageBucket": "tlcn-372608.appspot.com"})
+
 
 app = Flask(__name__)
 device = "cpu"
@@ -28,6 +34,13 @@ def get_random_name():
         result.append(result_str)
     return result
 
+def upload_image(file_name,data):
+    bucket = storage.bucket()
+    blob = bucket.blob(file_name)
+    blob.upload_from_string(data, content_type="image/png")
+    blob.make_public()
+    return blob.public_url
+
 # @app.route("/")
 # def hello():
 #     return render_template("index.html")
@@ -44,9 +57,15 @@ def predict():
         else:
             output, _ = infer(model, captions, 15, 4)
             file_name = get_random_name()
+            url = []
             for i in range(15):
-                output[i].save("static/" + file_name[i])
-            return render_template("index.html", result = file_name)
+                # output[i].save("static/" + file_name[i])
+                img = output[i]
+                img_byte_array = io.BytesIO()
+                img.save(img_byte_array, format="PNG")
+                _url = upload_image(file_name[i], img_byte_array.getvalue())
+                url.append(_url)
+            return render_template("index.html", result = url)
 
 # if __name__ == 'main':
 #     app.run(port=8080)
