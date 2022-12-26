@@ -7,8 +7,8 @@ import random
 
 app = Flask(__name__)
 device = "cpu"
-checkpoint = "./models/final_models.ckpt"
-config = "./models/config.yaml"
+checkpoint = "https://huggingface.co/lambdalabs/clip2latent/resolve/main/ffhq-sg2-510.ckpt"
+config = "https://huggingface.co/lambdalabs/clip2latent/resolve/main/ffhq-sg2-510.yaml"
 model = models.StyleGAN(config, device, checkpoint)
 
         
