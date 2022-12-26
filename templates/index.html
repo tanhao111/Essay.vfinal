@@ -61,7 +61,7 @@
         </form>
         <div class="result">
           {% for img_url in result %}
-          <img src={{url_for('static', filename=img_url)}} alt="" width="256px" height="256px">
+          <img src={{img_url}} alt="" width="256px" height="256px">
           {% endfor %}
         </div>
       </div>
