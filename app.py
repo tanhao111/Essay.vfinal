@@ -13,8 +13,8 @@ initialize_app(cred, {"storageBucket": "tlcn-372608.appspot.com"})
 
 app = Flask(__name__)
 device = "cpu"
-checkpoint = "https://huggingface.co/lambdalabs/clip2latent/resolve/main/ffhq-sg2-510.ckpt"
-config = "https://huggingface.co/lambdalabs/clip2latent/resolve/main/ffhq-sg2-510.yaml"
+checkpoint = "./models/final_models.ckpt"
+config = "./models/config.yaml"
 model = models.StyleGAN(config, device, checkpoint)
 
         
