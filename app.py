@@ -20,6 +20,19 @@ model = models.StyleGAN(config, device, checkpoint)
         
 @torch.no_grad()
 def infer(model, prompt, n_samples, scale, skips=250):
+    """This function use for generate a image
+
+    Args:
+        model (_type_): a model use to generate
+        prompt (_type_): a text
+        n_samples (_type_): number of images
+        scale (_type_): number of scale
+        skips (int, optional): _description_. Defaults to 250.
+
+    Returns:
+        list: list of image
+        score: clip score per image.
+    """
     images, clip_score = model(prompt, n_samples_per_txt=n_samples, cond_scale=scale, skips=skips, clip_sort=True)
     images = images.cpu()
     make_im = lambda x: (255*x.clamp(-1, 1)/2 + 127.5).to(torch.uint8).permute(1,2,0).numpy()
@@ -27,6 +40,11 @@ def infer(model, prompt, n_samples, scale, skips=250):
     return images, clip_score
 
 def get_random_name():
+    """Just use for random 15 strings 
+
+    Returns:
+        list: list of image name.
+    """
     letters = string.ascii_lowercase
     result = []
     for j in range(15):
@@ -35,19 +53,28 @@ def get_random_name():
     return result
 
 def upload_image(file_name,data):
+    """This function use for upload image to firebase
+
+    Args:
+        file_name (string): a random string as a file name
+        data (_type_): a byte represent for image 256 x 256
+
+    Returns:
+        str: url of upload image
+    """
     bucket = storage.bucket()
     blob = bucket.blob(file_name)
     blob.upload_from_string(data, content_type="image/png")
     blob.make_public()
     return blob.public_url
 
-# @app.route("/")
-# def hello():
-#     return render_template("index.html")
-
-
 @app.route("/", methods = ['GET', 'POST'])
 def predict():
+    """This method use for website demo
+
+    Returns:
+        A template
+    """
     if request.method == 'GET':
         return render_template("index.html")
     else:
@@ -66,6 +93,3 @@ def predict():
                 _url = upload_image(file_name[i], img_byte_array.getvalue())
                 url.append(_url)
             return render_template("index.html", result = url)
-
-# if __name__ == 'main':
-#     app.run(port=8080)
